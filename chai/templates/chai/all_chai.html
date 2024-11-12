@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}Chai List{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<script src="{% static 'js/scripts.js' %}"></script>
+
+<h1 class="text-4xl font-extrabold text-center text-orange-600 mb-6">Explore Our Chai Varieties</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 px-6">
+    {% for chai in chais %}
+        <div class="chai-card">
+            <img src="{{ chai.image.url }}" alt="{{ chai.name }}">
+            <div class="content">
+                <h3>{{ chai.name }}</h3>
+                <p class="price">Price: ₹{{ chai.price }}</p>
+                <div class="order-controls">
+                    <button onclick="decrement('{{ chai.id }}')">-</button>
+                    <input id="quantity-{{ chai.id }}" type="text" value="1" readonly style="width: 30px; text-align: center;">
+                    <button onclick="increment('{{ chai.id }}')">+</button>
+                </div>
+                <button onclick="addToOrder('{{ chai.name }}', '{{ chai.price }}', '{{ chai.id }}')" class="order-btn">Add to Order</button>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<button onclick="showOrderSummary()" style="position: fixed; bottom: 20px; right: 20px; background-color: #FB923C; color: black; padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer;   font-weight: bold;
+">
+    View Order Summary
+</button>
+
+<script>
+    let orders = [];
+
+    function increment(id) {
+        const quantity = document.getElementById(`quantity-${id}`);
+        quantity.value = parseInt(quantity.value) + 1;
+    }
+
+    function decrement(id) {
+        const quantity = document.getElementById(`quantity-${id}`);
+        if (quantity.value > 1) {
+            quantity.value = parseInt(quantity.value) - 1;
+        }
+    }
+
+    function addToOrder(name, price, id) {
+        const quantity = document.getElementById(`quantity-${id}`).value;
+        const existingOrder = orders.find(order => order.id === id);
+        if (existingOrder) {
+            existingOrder.quantity = parseInt(existingOrder.quantity) + parseInt(quantity);
+        } else {
+            orders.push({ name, price, quantity: parseInt(quantity), id });
+        }
+        syncOrdersWithBackend();
+        alert(`${name} (x${quantity}) added to order.`);
+    }
+
+    function syncOrdersWithBackend() {
+        fetch("{% url 'sync_orders' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: JSON.stringify({ orders })
+        });
+    }
+
+    function showOrderSummary() {
+        window.location.href = "{% url 'order_summary' %}";
+    }
+</script>
+{% endblock %}
+
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All chai</title>
+</head>
+<body>
+    <h1>All type of  available chai</h1>
+    
+</body>
+</html> {% endcomment %}

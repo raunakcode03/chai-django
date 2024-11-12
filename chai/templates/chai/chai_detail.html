@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block title %}{{ chai.name }}{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md overflow-hidden my-8 p-6">
+    <img class="w-full h-64 object-cover" src="{{ chai.image.url }}" alt="{{ chai.name }}">
+    <div class="p-4">
+        <h1 class="text-3xl font-extrabold text-gray-900">{{ chai.name }}</h1>
+        <p class="mt-2 text-gray-700">{{ chai.description }}</p>
+        <p class="text-lg font-semibold mt-4">Price: ₹{{ chai.price }}</p>
+        <form action="{% url 'order_chai' %}" method="post" class="mt-6">
+            {% csrf_token %}
+            <input type="hidden" name="chai_id" value="{{ chai.id }}">
+            <button class="w-full py-2 px-4 bg-orange-600 text-white rounded-md hover:bg-orange-700">
+                Order Now
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

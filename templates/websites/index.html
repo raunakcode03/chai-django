@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="bg-white shadow-lg rounded-lg p-10 text-center mx-auto max-w-2xl mb-12">
+    <h1 class="text-5xl font-extrabold text-orange-600 mb-6">Welcome to Chai Aur Code</h1>
+    <p class="text-xl text-gray-700 mb-4">
+        Discover our unique selection of chai, perfect for powering through your coding sessions! Whether you’re a fan of traditional Masala Chai, a Ginger enthusiast, or eager to try new flavors, we've got something for everyone.
+    </p>
+    <p class="text-lg text-gray-600">
+        Dive into our selection and make your coding journey as warm and comforting as a cup of chai. Happy Coding!
+    </p>
+</div>
+
+<div class="container mx-auto px-4 py-10">
+    <h2 class="text-4xl font-bold text-center text-orange-600 mb-8">Discover Our Chais</h2>
+    
+    {% if chai_varieties %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for chai in chai_varieties %}
+            <div class="bg-gray-900 text-white rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition duration-300 transform hover:scale-105">
+                <!-- Set a fixed width and height for images here -->
+                <img src="{{ chai.image.url }}" alt="{{ chai.name }}" class="chai-image">
+                <div class="p-4">
+                    <h3 class="text-2xl font-semibold mb-2">{{ chai.name }}</h3>
+                    <p class="text-sm">{{ chai.description }}</p>
+                    <p class="text-lg font-bold mt-4">₹{{ chai.price }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-white text-center">No chai varieties available at the moment.</p>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+
+
+
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chai-Django</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <h1> Chai And Django</h1>
+</body>
+</html> {% endcomment %}
+
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chai-Django</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <h1>Chai And Django</h1>
+</body>
+</html> -->

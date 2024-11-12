@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% load custom_filters %}
+
+{% block title %}Order Summary{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-8 mt-12">
+    <h1 class="text-4xl font-extrabold text-center text-orange-600 mb-8">Order Summary</h1>
+    
+    {% if orders %}
+        <div id="order-list" class="space-y-6">
+            {% for order in orders %}
+                <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-4">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">{{ order.name }}</h3>
+                        <p class="text-gray-600">Price: ₹{{ order.price|floatformat:2 }}</p>
+                        <p class="text-gray-600">Quantity: {{ order.quantity }}</p>
+                    </div>
+                    <!-- Displaying total for each item using multiply filter -->
+                    <p class="text-lg font-semibold text-gray-900">Total: ₹{{ order.price|multiply:order.quantity|floatformat:2 }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-8 text-right">
+            <h2 class="text-3xl font-semibold text-gray-900">Grand Total: ₹<span class="text-orange-600">{{ total_price|floatformat:2 }}</span></h2>
+            <button onclick="checkout()" class="mt-6 px-8 py-3 bg-orange-600 text-white rounded-lg font-bold text-lg hover:bg-orange-700 shadow-md transition duration-300">
+                Checkout
+            </button>
+        </div>
+    {% else %}
+        <p class="text-center text-gray-700">No orders available at the moment.</p>
+    {% endif %}
+</div>
+
+<script>
+    function checkout() {
+        alert("Thank you for your order! Your total is ₹{{ total_price|floatformat:2 }}");
+        localStorage.removeItem('orders'); // Clear local storage
+        fetch("{% url 'sync_orders' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: JSON.stringify({ orders: [] }) // Clear orders in the backend session
+        }).then(() => {
+            location.href = "{% url 'all_chai' %}";
+        });
+    }
+</script>
+{% endblock %}
+
+
+
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order</title>
+</head>
+<body>
+    <h3> Sir Your order is here </h3>
+</body>
+</html> {% endcomment %}
